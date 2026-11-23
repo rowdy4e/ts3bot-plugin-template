@@ -1,0 +1,42 @@
+# Builds the plugin's image when it has a Dockerfile and pushes it to ghcr.io/<owner>/<repo>:<version> (the version
+# in its ts3bot.yml; a plugin in a folder of a bigger repo: ghcr.io/<owner>/<repo>/<plugin>:<version>). The bot never builds an image: it pulls what this built. After the first push,
+# make the package public (GitHub → Packages → the package → Package settings → Change visibility), or the bot
+# can't pull it.
+name: plugin images
+on:
+  push:
+    branches: [main]
+    paths: ['**/Dockerfile', '**/ts3bot.yml', '.github/workflows/images.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: build and push each plugin that has a Dockerfile
+        run: |
+          set -eu
+          repo=$(echo "ghcr.io/${GITHUB_REPOSITORY}" | tr '[:upper:]' '[:lower:]')
+          find . -name Dockerfile -not -path './.git/*' | while read -r file; do
+            dir=$(dirname "$file")
+            [ -f "$dir/ts3bot.yml" ] || continue
+            name=$(sed -n 's/^name:[[:space:]]*//p' "$dir/ts3bot.yml" | head -1 | sed 's/[[:space:]]*#.*//' | tr -d '"'"'"' \r')
+            version=$(sed -n 's/^version:[[:space:]]*//p' "$dir/ts3bot.yml" | head -1 | sed 's/[[:space:]]*#.*//' | tr -d '"'"'"' \r')
+            if [ "$dir" = "." ]; then tag="$repo:$version"; else tag="$repo/$name:$version"; fi
+            if docker manifest inspect "$tag" >/dev/null 2>&1; then
+              echo "$tag is already there - a version is never built twice (bump 'version' to publish a change)"
+              continue
+            fi
+            docker build -t "$tag" "$dir"
+            docker push "$tag"
+          done

@@ -1,0 +1,28 @@
+# Make your plugin's repo from this one (GitHub: "Use this template"), name it ts3bot-<name>, fill this in.
+# Only 'name' and something to run are required.
+# A key the bot doesn't know is an error - so a typo never quietly means something else.
+name: my-plugin                     # lowercase; the service is called this
+description: What it does, in one sentence.
+version: 0.1.0                      # shown on install and update
+# run: main.py                      # what runs: main.py or main.sh by default
+# image: ghcr.io/you/ts3bot-x:1.0.0 # ...or a ready image built elsewhere (add a Dockerfile: .github/workflows builds it) (the bot never builds one; trusted sources only)
+
+when:                               # one program, started for any of these - it reads TS3BOT_TRIGGER (ts3bot.trigger)
+  cron: "0 9 * * *"                 # every day at 9:00 (local time)
+  # command: myplugin               # on !myplugin [words] - the words are TS3BOT_ARGS (ts3bot.args)
+  # join: true                      # whenever someone connects (TS3BOT_USER_UID says who)
+  # always: true                    # all the time instead (not with the others)
+
+may:                                # everything it may do - the admin sees this list and says yes to it
+  fetch: [api.example.com]          # web hosts it may read, through the bot ("*.example.com" = its subdomains)
+  tools: [say_channel]              # the bot tools it may call
+  # network: true                   # a real network connection instead of 'fetch' (trusted sources only)
+
+settings:                           # its own settings: SVC_<KEY> in its environment (ts3bot.setting("city"))
+  city: which city                  #   set with !service install my-plugin city=Brno, later !service set my-plugin city Brno
+  # notify:
+  #   type: people                  #   people: stored as UIDs ("me", an admin's name, or a UID) - ts3bot.people("notify")
+  #   description: who to tell
+  #   required: true                #   the bot asks for it before installing
+  # apikey: {type: secret, description: the API key}       # never shown again
+  # limit: {type: number, description: how many, default: 5}
