@@ -5,14 +5,16 @@ nainstalovaný plugin je na botovi **služba**. Bot si ho stáhne přímo z GitH
 kvůli tomu nerestartuje.
 
 Nový plugin: na GitHubu **Use this template** → repo pojmenuj `ts3bot-<název>` → vyplň `ts3bot.yml` a `main.py` →
-přidej repu téma (topic) `ts3bot-plugin`, aby ho bot ukázal v seznamu.
+přidej repu téma (topic) `ts3bot-plugin`, ať ho lidi na GitHubu najdou. Bot žádný seznam nečte - instaluje to, co
+mu dáš: adresu repa (jako import eggu).
 
 ## Instalace (v TeamSpeaku, soukromá zpráva botovi)
 
 ```
-!service install                       seznam pluginů (repa ts3bot-* s tématem ts3bot-plugin)
-!service install badges                = github.com/rowdy4e/ts3bot-badges; ukáže, co plugin dělá a co smí, zeptá se - a až po tvém „ano“ ho nainstaluje a jednou spustí
-!service install badges notify=me,Tisi … rovnou s nastavením
+!service install github.com/rowdy4e/ts3bot-badges
+                                       ukáže, co plugin dělá a co smí, zeptá se - a až po tvém „ano“ ho nainstaluje a jednou spustí
+!service install github.com/rowdy4e/ts3bot-badges notify=me,Tisi
+                                       … rovnou s nastavením
 !service list                          co je nainstalované
 !service info badges                   co smí, jak je nastavený, odkud je
 !service set badges notify me          změna nastavení (none = smazat)
@@ -22,20 +24,20 @@ přidej repu téma (topic) `ts3bot-plugin`, aby ho bot ukázal v seznamu.
 !service rollback badges               zpátky na předchozí verzi
 !service schedule cs2-news 0 * * * *   vlastní rozvrh místo toho z pluginu (default = zpátky)
 !service public dice on                jeho !příkaz smí každý s oprávněním „skills“, i v kanálu
-!service off badges · on · run · remove
+!service remove badges                 odebere ho i s nastavením a daty - zeptá se
+!service off badges · on · run
 ```
 
-`!plugin` je totéž co `!service`. Samotný název hledá repo `ts3bot-<název>` na účtu, který má bot nastavený
-(`PluginsAccount`, výchozí `github.com/rowdy4e`). Funguje i jakékoli jiné veřejné repo na GitHubu:
+`!plugin` je totéž co `!service`. Plugin se instaluje vždycky z adresy repa na GitHubu (veřejného):
 
 ```
-!service install badges@v2.0.0                            konkrétní verze (tag, větev, commit)
-!service install github.com/<účet>/<repo>                 plugin někoho jiného (ts3bot.yml v kořeni repa)
-!service install github.com/<účet>/<repo>/<složka>        …nebo ve složce většího repa
+!service install github.com/<účet>/<repo>                 plugin (ts3bot.yml v kořeni repa)
+!service install github.com/<účet>/<repo>@v1.2            konkrétní verze (tag, větev, commit)
+!service install github.com/<účet>/<repo>/<složka>        …nebo plugin ve složce většího repa
 ```
 
 …nebo odkaz zkopírovaný z prohlížeče (`https://github.com/<účet>/<repo>`). Totéž jde říct
-botovi normální větou („nainstaluj badges a piš to mně a Tisimu“) - AI instalaci jen připraví, potvrdit ji musíš ty.
+botovi normální větou („nainstaluj github.com/rowdy4e/ts3bot-badges a piš to mně a Tisimu“) - AI instalaci jen připraví, potvrdit ji musíš ty.
 
 ## Kostra pluginu
 
@@ -123,8 +125,7 @@ Na serveru se nikdy nic nesestavuje ani neinstaluje.
   přes bota a jen na weby ze svého seznamu - nedostane se tedy ani na jiné služby na tomtéž serveru.
 - **Nikdy víc než ty.** Plugin smí jen nástroje ze svého seznamu, a i z nich jen ty, které smí ten, kdo ho
   nainstaloval. Nástroje na správu služeb, oprávnění, AI a bota samotného nedostane nikdy.
-- **Důvěryhodné zdroje.** Z účtu nastaveného v `PluginsAccount` (a z těch, které operátor přidá do `PluginsTrusted`
-  v konfiguraci), smí plugin přinést i vlastní image nebo chtít skutečné síťové připojení. Odjinud jen skript, a bot
+- **Důvěryhodné zdroje.** Z účtů v `PluginsTrusted` v konfiguraci (výchozí `github.com/rowdy4e/`), smí plugin přinést i vlastní image nebo chtít skutečné síťové připojení. Odjinud jen skript, a bot
   upozorní, že zdroj není důvěryhodný.
 - **Aktualizace na zkoušku.** Nová verze se uloží vedle staré; když neprojde prvním během, vrátí se stará včetně
   dat. Vypnutá služba zůstane vypnutá. Nastavení a data převezme jen nová verze **téhož** pluginu - jiný plugin se
@@ -137,4 +138,4 @@ Na serveru se nikdy nic nesestavuje ani neinstaluje.
 | [ts3bot-badges](https://github.com/rowdy4e/ts3bot-badges) | Hlídá nové TeamSpeak badges a jejich kódy (oficiální seznam + vlákno na fóru); do kanálu, nebo soukromě vybraným lidem podle UID - hned, jak se připojí. |
 | [ts3bot-cs2-news](https://github.com/rowdy4e/ts3bot-cs2-news) | Nové články o CS2 ze Steamu do kanálu. |
 | [ts3bot-dice](https://github.com/rowdy4e/ts3bot-dice) | Nejmenší plugin: `!roll` v bashi. |
-| [ts3bot-docker-hello](https://github.com/rowdy4e/ts3bot-docker-hello) | Ukázka pluginu ve vlastním Docker image (není v seznamu, instaluje se adresou). |
+| [ts3bot-docker-hello](https://github.com/rowdy4e/ts3bot-docker-hello) | Ukázka pluginu ve vlastním Docker image. |
