@@ -65,7 +65,7 @@ when:                             # when it runs - one program, several reasons 
   cron: "*/15 * * * *"            # on a schedule (local time)
   command: myplugin               # on !myplugin [words]
   join: true                      # when someone connects
-  # always: true                  # or all the time (not with the others)
+  # always: true                  # it keeps running: the others come to it as events, answered at once (serve, below)
 
 may:                              # everything it may do - nothing else; the admin sees this list and confirms it
   fetch: [api.example.com]        # web hosts it may read (through the bot); "*.example.com" = its subdomains
@@ -98,6 +98,21 @@ A key the bot doesn't know is an error (with a hint) - so a typo never quietly m
   ts3bot.args, ts3bot.user_uid, ts3bot.user_name       # what came after the !command, and who typed it / connected
   ```
 
+  **Running all the time** (`always: true` with a `command`, `join` or `cron`): nothing is started for each - the
+  running plugin gets them as events and answers at once. Write it as a handler:
+
+  ```python
+  def handle(e):                     # e.trigger: start | command | join | cron | manual; e.args, e.user_uid, e.user_name
+      if e.trigger == "command":
+          return f"hello {e.user_name}"   # the answer - to whoever typed it (cron, join: to the admins, if it's news)
+      return ""                       # nothing to say
+  ts3bot.serve(handle)               # also works run one-shot: then it handles the one event it was started for
+  ```
+
+  It's called once with `start` first (to get ready). An error in one event goes to its log and answers nothing -
+  the plugin goes on. Keep what matters in `/data`: a restart (a new setting restarts it) loses its memory.
+  Waiting, it costs ~25 MB and no CPU. See [`ts3bot-badges`](https://github.com/rowdy4e/ts3bot-badges).
+
   In bash `ts-tool say_channel '{"text": "hello"}'` and `ts-fetch https://…`. In anything else the same over HTTP on
   the unix socket `$TS_BOT_SOCK` with the header `X-Bot-Token: $TS_BOT_TOKEN`: `POST /tool/<tool>` (JSON arguments)
   and `POST /fetch` (`{"url": "…"}`) - see [`ts3bot-docker-hello`](https://github.com/rowdy4e/ts3bot-docker-hello).
@@ -105,7 +120,8 @@ A key the bot doesn't know is an error (with a hint) - so a typo never quietly m
 - **Output** (`print`) goes to people: on a scheduled run to the admins, on a command to whoever typed it. When
   there's nothing to say, print nothing.
 - **People are UIDs**, not names: `message_user` takes a UID as `name`.
-- **Limits**: 2 minutes, 256 MB and half a core per run; at most 5 MB from the web per answer, 60 requests a minute.
+- **Limits**: 2 minutes, 256 MB and half a core per run (running all the time: no time limit, a minute to answer an
+  event); at most 5 MB from the web per answer, 60 requests a minute.
 
 ## Packages and other languages
 

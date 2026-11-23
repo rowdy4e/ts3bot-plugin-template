@@ -11,7 +11,7 @@ when:                               # one program, started for any of these - it
   cron: "0 9 * * *"                 # every day at 9:00 (local time)
   # command: myplugin               # on !myplugin [words] - the words are TS3BOT_ARGS (ts3bot.args)
   # join: true                      # whenever someone connects (TS3BOT_USER_UID says who)
-  # always: true                    # all the time instead (not with the others)
+  # always: true                    # it keeps running: the others then come to it as events (ts3bot.serve, below)
 
 may:                                # everything it may do - the admin sees this list and says yes to it
   fetch: [api.example.com]          # web hosts it may read, through the bot ("*.example.com" = its subdomains)
