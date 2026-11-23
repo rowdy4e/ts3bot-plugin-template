@@ -19,7 +19,7 @@ may:                                # everything it may do - the admin sees this
   # network: true                   # a real network connection instead of 'fetch' (trusted sources only)
 
 settings:                           # its own settings: SVC_<KEY> in its environment (ts3bot.setting("city"))
-  city: which city                  #   set with !service install my-plugin city=Brno, later !service set my-plugin city Brno
+  city: which city                  #   set with !service install github.com/<you>/ts3bot-my-plugin city=Brno, later !service set my-plugin city Brno
   # notify:
   #   type: people                  #   people: stored as UIDs ("me", an admin's name, or a UID) - ts3bot.people("notify")
   #   description: who to tell

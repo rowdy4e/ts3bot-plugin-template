@@ -46,7 +46,7 @@ ts3bot-muj-plugin/        (repo)
 ├── ts3bot.yml      co to je, kdy běží, co smí, jaká má nastavení (povinné)
 ├── main.py         co se spouští (nebo main.sh) - další soubory vedle něj se vezmou s sebou
 ├── vendor/         čistě pythonové balíčky, které potřebuje (volitelné)
-└── README.md       pro lidi; skryté soubory (.github/, .gitignore) bot nestahuje
+└── README.md       pro lidi: README, LICENSE, CHANGELOG a skryté soubory (.github/, .gitignore) bot nestahuje
 ```
 
 Tohle repo je ta kostra. Nejmenší příklad je [`ts3bot-dice`](https://github.com/rowdy4e/ts3bot-dice).
